@@ -1,0 +1,54 @@
+.spray-paint-pay {
+  margin: -15px;
+  .select-shop {
+
+  }
+
+  .select-shop:after {
+    content: ' ';
+    display: block;
+    transform: scaleY(1);
+    transform-origin: 0 0;
+    height: 2px;
+    background-image: url(../shop/add_address_border.png);
+    background-size: 34px 2px;
+  }
+
+  .tishi {
+    padding: 0 15px 60px;
+    .more {
+      margin-top: 15px;
+      padding: 0 15px;
+      .text {
+        color: #999;
+        font-size: 13px;
+        text-align: center;
+        position: relative;
+      }
+      .text:before,
+      .text:after {
+        position: absolute;
+        content: "";
+        width: 35%;
+        background: #bfbfbf;
+        height: 1px;
+        top: 8px;
+      }
+      .text:before {
+        left: 0;
+      }
+      .text:after {
+        right: 0;
+      }
+    }
+    ul {
+      padding: 5px 15px 10px;
+      color: #999;
+      font-size: 12px;
+      li {
+        line-height: 18px;
+        list-style: none;
+      }
+    }
+  }
+}

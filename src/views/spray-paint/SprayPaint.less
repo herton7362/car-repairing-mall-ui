@@ -1,0 +1,54 @@
+.spray-paint {
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+
+  .car-view,
+  .options {
+    position: relative;
+    margin: 15px;
+    ul {
+      list-style: none;
+      flex: 1;
+      padding: 0;
+      li {
+        float: left;
+        list-style: none;
+        text-align: center;
+        width: 33.3333%;
+        padding: 5px;
+        box-sizing: border-box;
+        span {
+          color: #666;
+          background: #ddd;
+          padding: 5px 10px;
+          border-radius: 5px;
+          width: 100%;
+          margin-right: 15px;
+          box-sizing: border-box;
+          font-size: 14px;
+          display: inline-block;
+          text-align: center;
+        }
+        span.selected {
+          color: #fff;
+          background: #C3A769;
+        }
+      }
+    }
+  }
+
+  .footer {
+    background-color: #fff;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-top: 1px solid #ddd;
+    z-index: 999;
+    .am-button {
+      border-radius: 0;
+    }
+  }
+}

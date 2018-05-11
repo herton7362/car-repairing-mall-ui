@@ -88,10 +88,12 @@ export default class SelectProduction extends React.Component {
                 {maintenanceItems.map(item=>{
                     return (
                         <Button key={item.id} type="primary" size="small" inline style={{
+                            marginTop: '8px',
                             marginRight: '15px',
                             height: 'auto',
                             lineHeight: '20px',
-                            padding: '8px 15px'
+                            padding: '8px 15px',
+                            width: '28%'
                         }}>
                             {item.name}
                             <p style={{margin: 0}}>￥ {numeral(this.state.selectedProduction.parts.price * item.partses.find(i => {

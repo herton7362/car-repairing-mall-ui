@@ -21,6 +21,18 @@ const requireAuth = (nextState, replace) => {
         replace({ pathname: '/login' })
     }
 }
+
+let username, token;
+token = util.getQueryString("token");
+username = util.getQueryString("username");
+if(token && username) {
+    util.ajax.post(`/token/login?appId=tonr&appSecret=secret&username=${username}&token=${token}`).then(response=>{
+        window.localStorage.accessToken = response.data['access_token'];
+        window.localStorage.refreshToken = response.data['refresh_token'];
+        window.localStorage.expiration = new Date().getTime() + ((response.data['expires_in'] / 2) * 1000);
+    })
+}
+
 util.ajax.get('/user/info').then((response)=>{
     util.setUserInfo(response.data);
     ReactDOM.render(

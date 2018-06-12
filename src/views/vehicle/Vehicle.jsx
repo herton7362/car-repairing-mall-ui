@@ -65,16 +65,17 @@ export default class Vehicle extends React.Component {
     }
 
     save = () => {
-        if(!/(^[\u4E00-\u9FA5]{1}[A-Z0-9]{6}$)|(^[A-Z]{2}[A-Z0-9]{2}[A-Z0-9\u4E00-\u9FA5]{1}[A-Z0-9]{4}$)|(^[\u4E00-\u9FA5]{1}[A-Z0-9]{5}[挂学警军港澳]{1}$)|(^[A-Z]{2}[0-9]{5}$)|(^(08|38){1}[A-Z0-9]{4}[A-Z0-9挂学警军港澳]{1}$)/.test(this.state.form.plateNumber)) {
+        if(!/(^[\u4E00-\u9FA5]{1}[A-Z0-9]{6}$)|(^[A-Z]{2}[A-Z0-9]{2}[A-Z0-9\u4E00-\u9FA5]{1}[A-Z0-9]{4}$)|(^[\u4E00-\u9FA5]{1}[A-Z0-9]{5}[挂学警军港澳]{1}$)|(^[A-Z]{2}[0-9]{5}$)|(^(08|38){1}[A-Z0-9]{4}[A-Z0-9挂学警军港澳]{1}$)/.test(this.state.form.plateNumber.toUpperCase())) {
             Toast.fail('车牌号不正确', 1);
             return;
         }
         util.ajax.get('/api/vehicle', {
             params: {
-                plateNumber: this.state.form.plateNumber
+                plateNumber: this.state.form.plateNumber.toUpperCase(),
+                logicallyDeleted: 0
             }
         }).then((response)=>{
-            if(response.data.length > 0 && this.state.oldPlateNumber != this.state.form.plateNumber) {
+            if(response.data.length > 0 && this.state.oldPlateNumber != this.state.form.plateNumber.toUpperCase()) {
                 Toast.fail('车牌号已被使用', 1);
                 return;
             }
@@ -88,7 +89,8 @@ export default class Vehicle extends React.Component {
             }
             util.ajax.post(`/api/vehicle`, Object.assign({}, this.state.form, {
                 memberId: this.state.user.id,
-                isDefault: !this.state.form.id
+                isDefault: !this.state.form.id,
+                plateNumber: this.state.form.plateNumber.toUpperCase()
             })).then(()=>{
                 Toast.success('保存成功', 1);
                 history.go(-1);
@@ -137,7 +139,7 @@ export default class Vehicle extends React.Component {
                         <InputItem maxLength={7} value={this.state.form.plateNumber} onChange={(v)=>{
                             this.setState((prevState, props) => ({
                                 form: Object.assign(prevState.form, {
-                                    plateNumber: v.toUpperCase()
+                                    plateNumber: v
                                 })
                             }));
                         }}>车牌号码</InputItem>

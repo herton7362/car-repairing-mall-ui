@@ -35,7 +35,12 @@ export default class Main extends React.Component {
     }
 
     loadVehicles = (memberId) => {
-        const ajax = util.ajax.get('/api/vehicle', {params: {memberId}});
+        const ajax = util.ajax.get('/api/vehicle', {
+            params: {
+                memberId,
+                logicallyDeleted: 0
+            }
+        });
         ajax.then((response)=>{
             this.setState({
                 vehicles: response.data

@@ -30,27 +30,34 @@ if(token && username) {
         window.localStorage.accessToken = response.data['access_token'];
         window.localStorage.refreshToken = response.data['refresh_token'];
         window.localStorage.expiration = new Date().getTime() + ((response.data['expires_in'] / 2) * 1000);
+        init();
+    })
+} else {
+    init();
+}
+
+function init() {
+    util.ajax.get('/user/info').then((response)=>{
+        util.setUserInfo(response.data);
+        ReactDOM.render(
+            <Router history={hashHistory}>
+                <Route path="/" component={App}>
+                    <IndexRoute component={Main} />
+                    <Route path="login" component={Login} />
+                    <Route path="vehicle" component={Vehicle} onEnter={requireAuth}/>
+                    <Route path="vehicle/:id" component={Vehicle} onEnter={requireAuth}/>
+                    <Route path="member/:id" component={ModifyMember} onEnter={requireAuth}/>
+                    <Route path="sprayPaint" component={SprayPaint} onEnter={requireAuth}/>
+                    <Route path="tyre" component={Tyre} onEnter={requireAuth}/>
+                    <Route path="maintenance" component={Maintenance} onEnter={requireAuth}/>
+                    <Route path="orderForm" component={OrderForm} onEnter={requireAuth}/>
+                    <Route path="orderForm/:id" component={OrderFormDetail} onEnter={requireAuth}/>
+                    <Route path=":selectedTab" component={Main} />
+                </Route>
+            </Router>
+            , document.getElementById('app'));
     })
 }
 
-util.ajax.get('/user/info').then((response)=>{
-    util.setUserInfo(response.data);
-    ReactDOM.render(
-        <Router history={hashHistory}>
-            <Route path="/" component={App}>
-                <IndexRoute component={Main} />
-                <Route path="login" component={Login} />
-                <Route path="vehicle" component={Vehicle} onEnter={requireAuth}/>
-                <Route path="vehicle/:id" component={Vehicle} onEnter={requireAuth}/>
-                <Route path="member/:id" component={ModifyMember} onEnter={requireAuth}/>
-                <Route path="sprayPaint" component={SprayPaint} onEnter={requireAuth}/>
-                <Route path="tyre" component={Tyre} onEnter={requireAuth}/>
-                <Route path="maintenance" component={Maintenance} onEnter={requireAuth}/>
-                <Route path="orderForm" component={OrderForm} onEnter={requireAuth}/>
-                <Route path="orderForm/:id" component={OrderFormDetail} onEnter={requireAuth}/>
-                <Route path=":selectedTab" component={Main} />
-            </Route>
-        </Router>
-        , document.getElementById('app'));
-})
+
 

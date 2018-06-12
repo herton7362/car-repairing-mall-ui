@@ -38,7 +38,7 @@ export default class Pay extends React.Component {
         window.location.href = util.baseURL +  '/api/entrustForm/ali/web/unified?orderNumber=' +
             orderNumber + '&cashPay=' + cashPay + '&access_token=' + localStorage.accessToken;
     }
-    wechatAppPay = () => {
+    wechatAppPay = ({orderNumber, cashPay}) => {
         util.ajax.post('/api/entrustForm/wechat/unified', {
             orderNumber,
             cashPay
@@ -124,8 +124,7 @@ export default class Pay extends React.Component {
             return;
         }
 
-        const total = numeral(this.state.selectedItem.manHourPrice
-            + this.state.selectedItem.partses.reduce((prev, cur)=>cur.count * cur.parts.price + prev, 0)).format('0.0');
+        const total = this.state.total;
         var ua = navigator.userAgent;
         if(total === 0 && this.state.payType === 'OFFLINE') {
             this.submitForm({
@@ -247,7 +246,7 @@ export default class Pay extends React.Component {
                     <WhiteSpace></WhiteSpace>
                     <List renderHeader={() => '支付方式'}>
                         <List.Item extra={<Icon type={'wechat' === onlinePayType&& 'check'} style={{color: '#09bb07'}}/>}
-                                   onClick={()=>this.setState({onlinePayType: 'ONLINE'})}>
+                                   onClick={()=>this.setState({onlinePayType: 'wechat'})}>
                             微信支付
                         </List.Item>
                         <List.Item extra={<Icon type={'ali' === onlinePayType&& 'check'} style={{color: '#09bb07'}}/>}

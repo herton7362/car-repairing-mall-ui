@@ -43,7 +43,7 @@ export default class MyZone extends React.Component {
 
     render () {
         const {vehicles, loadVehicles} = this.props;
-        const {formCount} = this.state;
+        const {formCount, user} = this.state;
         return (<div className="my-zone">
             <div className="widget-user-header">
                 <h3 className="widget-user-username">
@@ -118,7 +118,7 @@ export default class MyZone extends React.Component {
                                                     text: '确定',
                                                     onPress: () =>
                                                         util.ajax.delete(`/api/vehicle/${vehicle.id}`).then(()=>{
-                                                            loadVehicles();
+                                                            loadVehicles(user.id);
                                                         })
                                                 },
                                             ])
@@ -145,7 +145,7 @@ export default class MyZone extends React.Component {
                                                     isDefault: true,
                                                     default: true
                                                 })).then(()=>{
-                                                    loadVehicles();
+                                                    loadVehicles(user.id);
                                                 })
                                             }}/>}
 

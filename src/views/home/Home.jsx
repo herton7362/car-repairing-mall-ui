@@ -42,7 +42,10 @@ export default class Home extends React.Component {
 
     myVehicle = (vehicles) => {
         if(vehicles.length > 0) {
-            const vehicle = vehicles.find((vehicle) => vehicle.isDefault);
+            let vehicle = vehicles.find((vehicle) => vehicle.isDefault);
+            if(vehicle == null) {
+                vehicle = vehicles[0];
+            }
             return (
                 <div key={vehicle.id} className="my-car" onClick={this.goToMyZoneTab}>
                     <h2>您好！{vehicle.vehicleCategories[0].name} {vehicle.vehicleCategories[2].name} 车主</h2>
@@ -53,15 +56,28 @@ export default class Home extends React.Component {
         }
     }
 
+    checkVehicleExist = () => {
+        const {vehicles} = this.props;
+        if(vehicles == null || vehicles.length == 0) {
+            hashHistory.push('vehicle');
+            return false;
+        }
+        return true;
+    }
+
     loadTyre = (vehicles) => {
         let defaultVehicle;
         if(util.hasLogin()) {
             defaultVehicle = vehicles.find((vehicle)=>vehicle.isDefault);
         }
+        if(defaultVehicle == null && vehicles != null) {
+            defaultVehicle = vehicles[0];
+        }
         util.ajax.get('/maintenanceItem', {
             params: {
-                vehicleCategoryId: util.hasLogin()? defaultVehicle.vehicleCategoryId[4]: null,
-                category: '轮胎'
+                vehicleCategoryId: defaultVehicle? defaultVehicle.vehicleCategoryId[4]: null,
+                category: '轮胎',
+                logicallyDeleted: 0
             }
         }).then((response)=>{
             response.data.forEach((item, i1)=>{
@@ -82,10 +98,14 @@ export default class Home extends React.Component {
         if(util.hasLogin()) {
             defaultVehicle = vehicles.find((vehicle)=>vehicle.isDefault);
         }
+        if(defaultVehicle == null && vehicles != null) {
+            defaultVehicle = vehicles[0];
+        }
         util.ajax.get('/maintenanceItem', {
             params: {
-                vehicleCategoryId: util.hasLogin()? defaultVehicle.vehicleCategoryId[4]: null,
-                category: '保养'
+                vehicleCategoryId: defaultVehicle? defaultVehicle.vehicleCategoryId[4]: null,
+                category: '保养',
+                logicallyDeleted: 0
             }
         }).then((response)=>{
             response.data.forEach((item, i1)=>{
@@ -109,22 +129,22 @@ export default class Home extends React.Component {
                 <SearchBar placeholder="请您输入您想要查询的商品或服务" maxLength={16}/>
                 <Flex className="apps">
                     <Flex.Item>
-                        <Link to="/tyre" className="btn btn-app">
+                        <a onClick={() => this.checkVehicleExist() && hashHistory.push('tyre')} className="btn btn-app">
                             <i className="iconfont icon-tyre"></i>
                             <div style={{marginTop: 6}}>轮胎</div>
-                        </Link>
+                        </a>
                     </Flex.Item>
                     <Flex.Item>
-                        <Link to="/maintenance" className="btn btn-app">
+                        <a onClick={() => this.checkVehicleExist() && hashHistory.push('maintenance')} className="btn btn-app">
                             <i className="iconfont icon-car_maintenance"></i>
                             <div style={{marginTop: 6}}>保养</div>
-                        </Link>
+                        </a>
                     </Flex.Item>
                     <Flex.Item>
-                        <Link to="/sprayPaint" className="btn btn-app">
+                        <a onClick={() => this.checkVehicleExist() && hashHistory.push('sprayPaint')} className="btn btn-app">
                             <i className="iconfont icon-sheet_metal_paint"></i>
                             <div style={{marginTop: 6}}>钣金喷漆</div>
-                        </Link>
+                        </a>
                     </Flex.Item>
                 </Flex>
                 <WingBlank size="md">
@@ -147,7 +167,7 @@ export default class Home extends React.Component {
                     <Flex wrap="wrap">
                         {tyres.map(tyre=>(
                             <div className="thumbnail" key={tyre.id} onClick={()=>{
-                                hashHistory.push({
+                                this.checkVehicleExist() && hashHistory.push({
                                     pathname: '/tyre',
                                     state: {
                                         selectedItem: tyre
@@ -178,7 +198,7 @@ export default class Home extends React.Component {
                     <Flex wrap="wrap">
                         {maintenances.map(maintenance=>(
                             <div className="thumbnail" key={maintenance.id} onClick={()=>{
-                                hashHistory.push({
+                                this.checkVehicleExist() && hashHistory.push({
                                     pathname: '/maintenance',
                                     state: {
                                         selectedItem: maintenance

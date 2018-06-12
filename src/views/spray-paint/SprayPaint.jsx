@@ -57,7 +57,12 @@ export default class Vehicle extends React.Component {
     }
 
     loadVehicles = () => {
-        const ajax = util.ajax.get('/api/vehicle', {params: {memberId: this.state.user.id}});
+        const ajax = util.ajax.get('/api/vehicle', {
+            params: {
+                memberId: this.state.user.id,
+                logicallyDeleted: 0
+            }
+        });
 
         ajax.then((response)=>{
             if(!response.data || response.data.length <= 0) {
@@ -72,13 +77,17 @@ export default class Vehicle extends React.Component {
     }
 
     loadSprayPaints = (vehicles) => {
-        const defaultVehicle = vehicles.filter((vehicle)=>vehicle.isDefault)[0];
+        let defaultVehicle = vehicles.filter((vehicle)=>vehicle.isDefault)[0];
+        if(defaultVehicle == null && vehicles != null) {
+            defaultVehicle = vehicles[0];
+        }
         util.ajax.get('/api/maintenanceItem', {
             params: {
                 vehicleCategoryId: defaultVehicle.vehicleCategoryId[2],
                 category: '钣金喷漆',
                 sort:'sortNumber,updatedDate',
-                order: 'asc,desc'
+                order: 'asc,desc',
+                logicallyDeleted: 0
             }
         }).then((response)=>{
             this.setState({
@@ -99,6 +108,10 @@ export default class Vehicle extends React.Component {
 
     render() {
         const {maintenanceItems, productionSelectorVisible, vehicles,selectedImgs} = this.state;
+        let vehicle = vehicles.find(v=>v.isDefault);
+        if(vehicle == null && vehicles != null) {
+            vehicle = vehicles[0];
+        }
         function guid() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                 var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -144,7 +157,7 @@ export default class Vehicle extends React.Component {
 
             {productionSelectorVisible && (<div>
                 <SelectProduction maintenanceItems={maintenanceItems.filter(item=>item.selected)}
-                                  vehicle={vehicles.find(v=>v.isDefault)}></SelectProduction>
+                                  vehicle={vehicle}></SelectProduction>
             </div>)}
         </div>);
     }

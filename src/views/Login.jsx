@@ -151,8 +151,48 @@ class ForgotPwd extends React.Component {
 
         this.state = {
             mobile: this.props.mobile,
-            password: this.props.password
+            password: this.props.password,
+            code: null,
+            counter: null
         }
+    }
+
+    sendVerifyCode = () => {
+        if(this.state.counter) {
+            return;
+        }
+        this.setState({
+            counter: 60
+        })
+        let interval = setInterval(() => {
+            this.setState((prevState, props) => ({
+                counter: prevState.counter - 1
+            }));
+            if(this.state.counter === 0) {
+                clearInterval(interval);
+            }
+        }, 1000);
+        util.ajax.get('/verifyCode', {
+            params: {
+                mobile: this.state.mobile.replace(/ /g, '')
+            }
+        })
+    }
+
+    forgetPwd = () => {
+        if(!this.state.code) {
+            Toast.info('验证码不能为空', 1);
+            return;
+        }
+        if(!this.state.password) {
+            Toast.info('密码不能为空', 1);
+            return;
+        }
+        util.ajax.post(`/editPwd?mobile=${this.state.mobile.replace(/ /g, '')}&code=${this.state.code}&password=${this.state.password}`).then(() => {
+            this.props.goToPage('login');
+        }).catch(error => {
+            Toast.info(error.response.data.message, 1);
+        });
     }
 
     render () {
@@ -186,7 +226,7 @@ class ForgotPwd extends React.Component {
                 </InputItem>
             </List>
             <WhiteSpace size="xl"></WhiteSpace>
-            <WingBlank><Button type="primary" onClick={this.login}>确定</Button></WingBlank>
+            <WingBlank><Button type="primary" onClick={this.forgetPwd}>确定</Button></WingBlank>
             <WhiteSpace size="xl"></WhiteSpace>
             <div style={{color: '#999', textAlign: 'center'}}>
                 <a href="javascript:void(0);" onClick={() => {this.props.goToPage('login')}}>通过手机号密码登录</a>

@@ -32,7 +32,12 @@ export default class Maintenance extends React.Component {
     }
 
     loadVehicles = () => {
-        const ajax = util.ajax.get('/api/vehicle', {params: {memberId: this.state.user.id}});
+        const ajax = util.ajax.get('/api/vehicle', {
+            params: {
+                memberId: this.state.user.id,
+                logicallyDeleted: 0
+            }
+        });
 
         ajax.then((response)=>{
             this.setState({
@@ -43,11 +48,15 @@ export default class Maintenance extends React.Component {
     }
 
     loadMaintenance = (vehicles) => {
-        const defaultVehicle = vehicles.filter((vehicle)=>vehicle.isDefault)[0];
+        let defaultVehicle = vehicles.filter((vehicle)=>vehicle.isDefault)[0];
+        if(defaultVehicle == null && vehicles != null) {
+            defaultVehicle = vehicles[0];
+        }
         util.ajax.get('/api/maintenanceItem', {
             params: {
                 vehicleCategoryId: defaultVehicle.vehicleCategoryId[4],
-                category: '保养'
+                category: '保养',
+                logicallyDeleted: 0
             }
         }).then((response)=>{
             response.data.forEach((item, i1)=>{
@@ -75,7 +84,10 @@ export default class Maintenance extends React.Component {
 
     render () {
         const { vehicles, maintenanceItems, total, selectedItem, payVisible } = this.state;
-        const vehicle = vehicles.find(v=>v.isDefault);
+        let vehicle = vehicles.find(v=>v.isDefault);
+        if(vehicle == null && vehicles != null) {
+            vehicle = vehicles[0];
+        }
         return (<div className="maintenance">
             <NavBar
                 mode="light"

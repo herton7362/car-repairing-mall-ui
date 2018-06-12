@@ -93,7 +93,8 @@ export default class OrderForm extends React.Component {
                 all: 'true',
                 status,
                 creatorId: this.state.user.id,
-                origin: 'ONLINE_SHOP'
+                origin: 'ONLINE_SHOP',
+                logicallyDeleted: 0
             }
         })
     }
